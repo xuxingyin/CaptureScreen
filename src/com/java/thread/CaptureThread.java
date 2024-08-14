@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 
-import org.apache.xmlgraphics.image.codec.tiff.TIFFEncodeParam;
 
 import com.github.jaiimageio.impl.common.ImageUtil;
 import com.github.jaiimageio.plugins.tiff.TIFFField;

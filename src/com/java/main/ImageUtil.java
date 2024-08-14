@@ -1,18 +1,25 @@
 package com.java.main;
 
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGEncodeParam;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.stream.ImageOutputStream;
+import javax.lang.model.element.Element;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.Kernel;
-import java.awt.image.ConvolveOp;
 
 public class ImageUtil {
 
@@ -67,16 +74,43 @@ public class ImageUtil {
 		// Write the jpeg to a file.
 		FileOutputStream out = new FileOutputStream(resizedFile);
 
-		// Encodes image as a JPEG data stream
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//		// Encodes image as a JPEG data stream
+//		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//
+//		JPEGEncodeParam param = encoder
+//				.getDefaultJPEGEncodeParam(bufferedImage);
+//
+//		param.setQuality(quality, true);
+//
+//		encoder.setJPEGEncodeParam(param);
+//		encoder.encode(bufferedImage);
+		ImageWriter imageWriter  =   ImageIO.getImageWritersBySuffix("jpg").next();
+		ImageOutputStream ios  =  ImageIO.createImageOutputStream(out);
+		imageWriter.setOutput(ios);
 
-		JPEGEncodeParam param = encoder
-				.getDefaultJPEGEncodeParam(bufferedImage);
+		//and metadata
+		IIOMetadata imageMetaData  =  imageWriter.getDefaultImageMetadata(new ImageTypeSpecifier(bufferedImage), null);
 
-		param.setQuality(quality, true);
 
-		encoder.setJPEGEncodeParam(param);
-		encoder.encode(bufferedImage);
+		if(quality >= 0 && quality <= 1f){
+
+			//old compression
+			//jpegEncodeParam.setQuality(JPEGcompression,false);
+
+			// new Compression
+			JPEGImageWriteParam jpegParams  =  (JPEGImageWriteParam) imageWriter.getDefaultWriteParam();
+			jpegParams.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
+			jpegParams.setCompressionQuality(quality);
+
+		}
+
+		//old write and clean
+		//jpegEncoder.encode(image_to_save, jpegEncodeParam);
+
+		//new Write and clean up
+		imageWriter.write(imageMetaData, new IIOImage(bufferedImage, null, null), null);
+		ios.close();
+		imageWriter.dispose();
 	} // Example usage
 
 	public static void resize(BufferedImage image, int times, float quality, File resizedFile) throws IOException {
@@ -131,16 +165,46 @@ public class ImageUtil {
 		// Write the jpeg to a file.
 		FileOutputStream out = new FileOutputStream(resizedFile);
 
-		// Encodes image as a JPEG data stream
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//		// Encodes image as a JPEG data stream
+//		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//
+//		JPEGEncodeParam param = encoder
+//				.getDefaultJPEGEncodeParam(bufferedImage);
+//
+//		param.setQuality(quality, true);
+//
+//		encoder.setJPEGEncodeParam(param);
+//		encoder.encode(bufferedImage);
 
-		JPEGEncodeParam param = encoder
-				.getDefaultJPEGEncodeParam(bufferedImage);
 
-		param.setQuality(quality, true);
 
-		encoder.setJPEGEncodeParam(param);
-		encoder.encode(bufferedImage);
+		ImageWriter imageWriter  =   ImageIO.getImageWritersBySuffix("jpg").next();
+		ImageOutputStream ios  =  ImageIO.createImageOutputStream(out);
+		imageWriter.setOutput(ios);
+
+		//and metadata
+		IIOMetadata imageMetaData  =  imageWriter.getDefaultImageMetadata(new ImageTypeSpecifier(bufferedImage), null);
+
+
+		if(quality >= 0 && quality <= 1f){
+
+			//old compression
+			//jpegEncodeParam.setQuality(JPEGcompression,false);
+
+			// new Compression
+			JPEGImageWriteParam jpegParams  =  (JPEGImageWriteParam) imageWriter.getDefaultWriteParam();
+			jpegParams.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
+			jpegParams.setCompressionQuality(quality);
+
+		}
+
+		//old write and clean
+		//jpegEncoder.encode(image_to_save, jpegEncodeParam);
+
+		//new Write and clean up
+		imageWriter.write(imageMetaData, new IIOImage(bufferedImage, null, null), null);
+		ios.close();
+		imageWriter.dispose();
 	}
 	
 	public static void toBinary(File sourceFile) throws IOException {

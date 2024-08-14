@@ -38,8 +38,10 @@ public class OCRTest {
 
 	public static void main(String[] args) {
 //		File imageFile = new File("0.png");
+		String tessdatadir = "/Users/jackxu/IdeaProjects/CaptureScreen/tessdata";
 		ITesseract instance = new Tesseract();
-		File tessDataFolder = new File(System.getenv("TESSDATA_PREFIX") + File.separator + "tessdata");
+		File tessDataFolder = null; //new File(System.getenv("TESSDATA_PREFIX") + File.separator + "tessdata");
+		tessDataFolder = new File(tessdatadir);
 		instance.setDatapath(tessDataFolder.getAbsolutePath());
 		System.out.println(tessDataFolder.getAbsolutePath());
 		try {
@@ -50,6 +52,7 @@ public class OCRTest {
 //			System.out.println(instance.doOCR(imageFile, new Rectangle(155, 0, 60, 63)));
 			File floatImg = new File("14.jpg");
 			instance.setLanguage("digtal");
+			instance.setLanguage("chi_sim");
 			String result = instance.doOCR(floatImg);
 			
 			System.out.println("ocr result is: -" + result + "-" + result.length());

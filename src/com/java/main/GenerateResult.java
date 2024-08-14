@@ -95,7 +95,7 @@ public class GenerateResult {
 				File imgBinary = new File(caseDir, j + ".jpg_binary.jpg");
 				float ocrValue = OCRTest.getFloatValue(imgBinary, rectangle);
 				if (ocrValue > 1000.0) {
-					ocrValue = ocrValue/10.0;
+					ocrValue = (float) (ocrValue/10.0);
 				}
 				writer.write(String.valueOf(ocrValue) + System.getProperty("line.separator"));
 				if (ocrValue > max) {

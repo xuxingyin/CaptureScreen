@@ -24,9 +24,26 @@
 			<artifactId>jna</artifactId>
 			<version>5.12.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.melloware</groupId>
+			<artifactId>jintellitype</artifactId>
+			<version>1.4.1</version>
+		</dependency>
 
 
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>6</source>
+					<target>6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<!--解决打包错 程序包com.sun.image.codec.jpeg不存在-->
 	<plugin>

@@ -3,6 +3,8 @@ package com.java.main;
 import java.awt.Rectangle;
 import java.util.Scanner;
 
+import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeConstants;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -13,6 +15,7 @@ import org.apache.commons.cli.ParseException;
 import com.java.thread.CaptureThread;
 
 public class Main {
+
 
 	public Main() {
 	}
@@ -27,8 +30,10 @@ public class Main {
 				Integer.valueOf(params[2]),
 				Integer.valueOf(params[3]));
 	}
-	
+
 	public static void main(String[] args) {
+
+
 		Main main = new Main();
 		CommandLineParser parser = new BasicParser();
 		Options options = new Options();
@@ -66,6 +71,7 @@ public class Main {
 		System.out.println("初始化完成!");
 		CaptureThread capture = new CaptureThread(area, timeval);
 		capture.start();
+		JIntellitype.getInstance().addHotKeyListener(new HotKey(capture));
 		String input = "";
 		Scanner scanner = new Scanner(System.in);
 		int i = 1;
@@ -90,5 +96,6 @@ public class Main {
 		capture.stop();
 		scanner.close();
 	}
+
 
 }

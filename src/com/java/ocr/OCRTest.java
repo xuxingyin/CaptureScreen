@@ -11,7 +11,9 @@ public class OCRTest {
 
 	public static float getFloatValue(File imgFile, Rectangle rectangle) {
 		ITesseract instance = new Tesseract();
-		File tessDataFolder = new File(System.getenv("TESSDATA_PREFIX") + File.separator + "tessdata");
+//		File tessDataFolder = new File(System.getenv("TESSDATA_PREFIX") + File.separator + "tessdata");
+		File tessDataFolder = new File("D:\\work\\CaptureScreen\\tessdata");
+
 		instance.setDatapath(tessDataFolder.getAbsolutePath());
 		instance.setLanguage("digtal");
 		String result = "0.0";
@@ -32,13 +34,13 @@ public class OCRTest {
 			return 0f;
 		}
 //		System.out.println("--" + result + "--");
-		
+
 		return val;
 	}
 
 	public static void main(String[] args) {
 //		File imageFile = new File("0.png");
-		String tessdatadir = "/Users/jackxu/IdeaProjects/CaptureScreen/tessdata";
+		String tessdatadir = "D:\\work\\CaptureScreen\\tessdata";
 		ITesseract instance = new Tesseract();
 		File tessDataFolder = null; //new File(System.getenv("TESSDATA_PREFIX") + File.separator + "tessdata");
 		tessDataFolder = new File(tessdatadir);
@@ -51,10 +53,12 @@ public class OCRTest {
 //			System.out.println(instance.doOCR(imageFile, new Rectangle(82, 0, 70, 63)));
 //			System.out.println(instance.doOCR(imageFile, new Rectangle(155, 0, 60, 63)));
 			File floatImg = new File("14.jpg");
-			instance.setLanguage("digtal");
-			instance.setLanguage("chi_sim");
+			floatImg = new File("20240815104502/1/85.jpg");
+//			instance.setLanguage("digtal");
+//			instance.setLanguage("chi_sim");
+			instance.setLanguage("eng");
 			String result = instance.doOCR(floatImg);
-			
+
 			System.out.println("ocr result is: -" + result + "-" + result.length());
 		} catch (TesseractException e) {
 			e.printStackTrace();

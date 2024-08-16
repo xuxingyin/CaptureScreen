@@ -1,6 +1,6 @@
-package com.java.main;
+package com.capture.screen.main;
 
-import com.java.thread.CaptureThread;
+import thread.CaptureThread;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeConstants;
@@ -10,7 +10,7 @@ import com.melloware.jintellitype.JIntellitypeConstants;
  */
 public class HotKey implements HotkeyListener {
     private static final int RUN = 168;
-    private static final int PAUSE = 168;
+    private static final int PAUSE = 169;
     private   CaptureThread capture;
 
     public HotKey(CaptureThread capture) {
@@ -25,7 +25,7 @@ public class HotKey implements HotkeyListener {
     @Override
     public void onHotKey(int identifier) {
         System.out.println("KEY="+identifier);
-        if (RUN == identifier) {
+        if (PAUSE == identifier) {
             capture.pause();
             System.out.println("截屏线程暂停成功。。。\n");
         }

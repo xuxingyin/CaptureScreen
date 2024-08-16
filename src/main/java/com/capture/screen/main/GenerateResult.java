@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.capture.screen.Main;
-import ocr.OCRTest;
+import com.capture.screen.ocr.OCRTest;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

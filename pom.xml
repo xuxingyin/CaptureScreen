@@ -1,11 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.5.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
 	<groupId>CaptureScreen</groupId>
 	<artifactId>CaptureScreen</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>capture</name>
 	<description>capture screen at giving area</description>
+	<properties>
+		<java.version>8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
 		<dependency>
@@ -29,36 +42,146 @@
 			<artifactId>jintellitype</artifactId>
 			<version>1.4.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<build>
+		<finalName>pkg-sb</finalName>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<source>6</source>
-					<target>6</target>
+					<mainClass>com.capture.screen.Main</mainClass>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.7.25</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<!-- 打包类型，可使用值：console、gui  分别代表控制台和图形界面程序-->
+							<headerType>console</headerType>
+							<!-- jar文件位置 -->
+							<jar>target/${build.finalName}.jar</jar>
+							<!-- 生成exe文件的名称 -->
+							<outfile>target/${build.finalName}.exe</outfile>
+							<!--如果运行时发生错误，会显示一个错误标题，这个一般是在gui程序中会弹出一个对话框，console程序无效 -->
+							<errTitle>pkg-sb-error</errTitle>
+							<!--   exe  文件的图标                       -->
+							<icon>${basedir}/icon/app.ico</icon>
+							<classPath>
+								<!--
+                                这里一定要注意，springboot默认打包后的启动类是这个，而不是我们程序中的Application文件，
+                                如果不清楚，可以讲打包的jar文件解压找到:META-INF/MANIFEST.MF文件查看里面的：Main-Class
+                                属性值
+                                -->
+								<mainClass>org.springframework.boot.loader.JarLauncher</mainClass>
+								<!--  是否添加依赖，springboot将所以依赖打包到了一起，这里不需要                              -->
+								<addDependencies>false</addDependencies>
+								<preCp>anything</preCp>
+							</classPath>
+							<jre>
+								<jdkPreference>jdkOnly</jdkPreference>
+								<!--
+                                jdk运行目录，这里可使用绝对路径，也可使用相对路径，不建议使用决定路径，这里我们直接采用相对路径，下面这个配置标识jdk的目录和exe的文件在同级
+                                JDK的下载，请查看README.md文件，我已经将各个操作系统的jre收集，大家自行下载即可，下载后解压，重新命名文件夹即可，这里的文件夹可以自定义
+                                -->
+								<path>./runtime</path>
+								<jdkPreference>preferJre</jdkPreference>
+								<!--      java的启动参数                          -->
+								<opts>
+									<opt>-server</opt>
+									<opt>-Xss256k</opt>
+									<opt>-XX:MetaspaceSize=256m</opt>
+									<opt>-XX:MaxMetaspaceSize=256m</opt>
+									<opt>-Xms512m</opt>
+									<opt>-Xmx512m</opt>
+									<opt>-Xmn512m</opt>
+									<opt>-XX:SurvivorRatio=8</opt>
+									<opt>-XX:+AggressiveOpts</opt>
+									<opt>-XX:+UseBiasedLocking</opt>
+									<opt>-XX:+DisableExplicitGC</opt>
+									<opt>-XX:MaxTenuringThreshold=12</opt>
+									<opt>-XX:+UseConcMarkSweepGC</opt>
+									<opt>-XX:+UseParNewGC</opt>
+									<opt>-XX:+CMSParallelRemarkEnabled</opt>
+									<opt>-XX:LargePageSizeInBytes=128m</opt>
+									<opt>-XX:+UseFastAccessorMethods</opt>
+									<opt>-XX:+UseCMSInitiatingOccupancyOnly</opt>
+									<opt>-Djava.awt.headless=true</opt>
+									<opt>-Duser.timezone=GMT+08</opt>
+									<!--     这里我们设置了两个自定义变量，在程序中验证                               -->
+									<opt>-Dvar1=var1-value-001</opt>
+									<opt>-Dconfig.file=./config.properties</opt>
+								</opts>
+							</jre>
+							<!--      这里是Windows下EXE文件的一些描述信息，大家随便填写                      -->
+							<versionInfo>
+								<fileVersion>1.2.3.4</fileVersion>
+								<txtFileVersion>txt file version?</txtFileVersion>
+								<fileDescription>a description</fileDescription>
+								<copyright>my copyright</copyright>
+								<productVersion>4.3.2.1</productVersion>
+								<txtProductVersion>txt product version</txtProductVersion>
+								<productName>E-N-C-C</productName>
+								<internalName>ccne</internalName>
+								<originalFilename>pkg-sb.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--            制作压缩包-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.4.2</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly/package-win64.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
-
-	<!--解决打包错 程序包com.sun.image.codec.jpeg不存在-->
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<configuration>
-			<source>1.8</source>
-			<target>1.8</target>
-			<encoding>UTF-8</encoding>
-			<compilerArguments>
-				<verbose />
-				<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
-			</compilerArguments>
-		</configuration>
-	</plugin>
-	<!-- windows下用;，linux下用: -->
 
 </project>

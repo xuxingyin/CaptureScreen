@@ -1,4 +1,4 @@
-package thread;
+package com.capture.screen.thread;
 
 import java.awt.AWTException;
 import java.awt.Rectangle;

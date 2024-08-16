@@ -1,11 +1,10 @@
-package ocr;
+package com.capture.screen.ocr;
 import java.awt.Rectangle;
 import java.io.File;
 
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import net.sourceforge.tess4j.util.LoadLibs;
 
 public class OCRTest {
 
@@ -22,10 +21,10 @@ public class OCRTest {
 			result = instance.doOCR(imgFile, rectangle);
 			result = result.trim();
 			result = result.replace(" ", "");
-//			System.out.println("ocr:-" + result + "-");
+//			System.out.println("com.capture.screen.ocr:-" + result + "-");
 			val = Float.valueOf(result);
 		} catch (TesseractException e) {
-//			System.out.println("ocr result is: -" + result + "-" + result.length());
+//			System.out.println("com.capture.screen.ocr result is: -" + result + "-" + result.length());
 //			e.printStackTrace();
 		} catch (Exception e) {
 			val = 0.0f;
@@ -60,8 +59,8 @@ public class OCRTest {
 			instance.setLanguage("eng");
 			String result = instance.doOCR(floatImg);
 
-			System.out.println("ocr result is: " + result + "-" + result.length());
-			System.out.println("ocr result length: " +  result.length());
+			System.out.println("com.capture.screen.ocr result is: " + result + "-" + result.length());
+			System.out.println("com.capture.screen.ocr result length: " +  result.length());
 		} catch (TesseractException e) {
 			e.printStackTrace();
 		}

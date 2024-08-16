@@ -1,10 +1,14 @@
 package com.capture.screen;
 
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 import java.util.Scanner;
 
 import com.capture.screen.main.HotKey;
 import com.melloware.jintellitype.JIntellitype;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -12,15 +16,55 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import thread.CaptureThread;
+import com.capture.screen.thread.CaptureThread;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@SpringBootApplication
+@RestController
+@Slf4j
 public class Main {
 
+	public static void main(String[] args) {
+		SpringApplication.run(Main.class, args);
+		String var1=System.getProperty("var1");
+		String config_file=System.getProperty("config.file");
+		StringBuffer buffer=new StringBuffer();
+		buffer.append("获取到系统变量var1的值：").append(var1).append("<br/>");
+		buffer.append("获取到系统变量[config.file]的值：").append(config_file).append("<br/>");
+		buffer.append("用户目录：").append(System.getProperty("user.dir")).append("<br/>");
+		if(!StringUtils.isEmpty(config_file)){
+			File file=new File(config_file);
+			buffer.append("文件绝对路径：").append(file.getAbsolutePath()).append("<br/>");
+			if(file.exists()){
+				try (FileInputStream inputStream=new FileInputStream(file)){
+					Properties properties=new Properties();
+					properties.load(inputStream);
+					buffer.append("获取到配置文件信息：").append(properties.toString());
+					System.out.println("初始化完成!");
+					Rectangle area = toRectangle( properties.getProperty("a"));
+					int timeval = Integer.parseInt(properties.getProperty("t"));
+					CaptureThread capture = new CaptureThread(area, timeval);
+					capture.start();
+					JIntellitype.getInstance().addHotKeyListener(new HotKey(capture));
+				}catch (Exception e){
+					buffer.append("读取配置文件错误："+e.getMessage());
 
-	public Main() {
+				}
+			}else {
+				buffer.append("配置文件不存在");
+			}
+		}else {
+			buffer.append("未获取到配置文件变量信息");
+		}
+		log.info(buffer.toString());
 	}
 
-	public Rectangle toRectangle(String area) {
+	public static Rectangle toRectangle(String area) {
 		String[] params = area.split(",");
 		if (params.length != 4) {
 			return null;
@@ -35,9 +79,33 @@ public class Main {
 	 * -a 500,340,100,100 -t 2000
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 
+		String var1=System.getProperty("var1");
+		String config_file=System.getProperty("config.file");
+		StringBuffer buffer=new StringBuffer();
+		buffer.append("获取到系统变量var1的值：").append(var1).append("<br/>");
+		buffer.append("获取到系统变量[config.file]的值：").append(config_file).append("<br/>");
+		buffer.append("用户目录：").append(System.getProperty("user.dir")).append("<br/>");
+		if(!StringUtils.isEmpty(config_file)){
+			File file=new File(config_file);
+			buffer.append("文件绝对路径：").append(file.getAbsolutePath()).append("<br/>");
+			if(file.exists()){
+				try (FileInputStream inputStream=new FileInputStream(file)){
+					Properties properties=new Properties();
+					properties.load(inputStream);
+					buffer.append("获取到配置文件信息：").append(properties.toString());
+				}catch (Exception e){
+					buffer.append("读取配置文件错误："+e.getMessage());
 
+				}
+			}else {
+				buffer.append("配置文件不存在");
+			}
+		}else {
+			buffer.append("未获取到配置文件变量信息");
+		}
+		/*
 		Main main = new Main();
 		CommandLineParser parser = new BasicParser();
 		Options options = new Options();
@@ -99,7 +167,41 @@ public class Main {
 		}
 		capture.stop();
 		scanner.close();
+		*/
 	}
 
+	/**
+	 * 这里来测试启动时的环境变量
+	 * @return
+	 */
+	@RequestMapping("/test")
+	public Object test(){
+		String var1=System.getProperty("var1");
+		String config_file=System.getProperty("config.file");
+		StringBuffer buffer=new StringBuffer();
+		buffer.append("获取到系统变量var1的值：").append(var1).append("<br/>");
+		buffer.append("获取到系统变量[config.file]的值：").append(config_file).append("<br/>");
+		buffer.append("用户目录：").append(System.getProperty("user.dir")).append("<br/>");
+		if(!StringUtils.isEmpty(config_file)){
+			File file=new File(config_file);
+			buffer.append("文件绝对路径：").append(file.getAbsolutePath()).append("<br/>");
+			if(file.exists()){
+				try (FileInputStream inputStream=new FileInputStream(file)){
+					Properties properties=new Properties();
+					properties.load(inputStream);
+					buffer.append("获取到配置文件信息：").append(properties.toString());
+				}catch (Exception e){
+					buffer.append("读取配置文件错误："+e.getMessage());
 
+				}
+			}else {
+				buffer.append("配置文件不存在");
+			}
+		}else {
+			buffer.append("未获取到配置文件变量信息");
+		}
+		return  ResponseEntity
+				.ok()
+				.body(buffer.toString());
+	}
 }

@@ -1,6 +1,6 @@
 package com.capture.screen.main;
 
-import thread.CaptureThread;
+import com.capture.screen.thread.CaptureThread;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeConstants;

@@ -6,7 +6,10 @@ com.capture.screen.Main            截图程序入口
 GenerateResult  OCR程序入口
 
 ### 依赖软件
-tesseract-ocr
+tesseract-com.capture.screen.ocr
 
 ###
 -a 500,340,100,100 -t 2000
+
+mvn clean -DskipTests package
+
